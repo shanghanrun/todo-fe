@@ -1,9 +1,10 @@
-// local 서버 및 local 몽고디비서버를 사용할 때 이것을 api.js로 설정한다.
+// Netlify를 사용하려면, 이것의 파일명을 api.js로 바꾸고
+// 커밋하고 push 한 이후에 사용한다.
 
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: `${process.env.REACT_APP_BACKEND_URL}/api`,
+  baseURL: `${process.env.REACT_APP_BACKEND_PROXY}/api`,
   headers: {
     "Content-Type": "application/json",
   },
