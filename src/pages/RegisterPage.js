@@ -3,30 +3,41 @@ import {useNavigate} from 'react-router-dom'
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import api from "../utils/api";
-import userStore from "../store/userStore";
 
 const RegisterPage = () => {
 	const [name, setName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] =useState('')
 	const [secPassword, setSecPassword] =useState('')
-	const {setUserInfo} = userStore()
+  const [error, setError] = useState('')
 	const navigate = useNavigate()
 
 	const handleSubmit= async(e)=>{  // 백엔드로 보내야 되므로 async
 		e.preventDefault() // submit은 화면고침되므로 방지
 		//보내기전에 유효성검사(특히 패스워드가 동일한지)
+    // 에러메시지를 만들 거라서 에러 핸들링할 try catch문
+    try{
+      if(password !== secPassword){
+        throw new Error('패스워드가 일치하지 않습니다. 다시 입력해주세요')
+      }
 
-		const newUser = {username: name, email,password}
-		// api의 기본주소 //http://localhost:5000/api
-		const resp = await api.post('/user', newUser)
-		console.log('resp :', resp)
-		setUserInfo(resp.data.data)	
-		navigate('/login') // navigate를 통해 이동해야 스테이트정보가 초기화되지 않는다.
+      const newUser = {username: name, email,password}
+      // api의 기본주소 //http://localhost:5000/api
+      const resp = await api.post('/user', newUser)
+      console.log('resp :', resp)
+      if(resp.status === 200){
+        navigate('/login') // navigate를 통해 이동해야 스테이트정보가 초기화되지 않는다.
+      }
+    } catch(e){
+      setError(e.message)
+      setName(''); setEmail(''); setPassword('');setSecPassword('') //초기화 시켜야 제대로 입력값 다시 받을 수 있다.
+    }
+    
 	}
 
   return (
     <div className="display-center">
+      {error && <div className="error">{error}</div>}
       <Form className="login-box" onSubmit={handleSubmit}>
         <h1>회원가입</h1>
         <Form.Group className="mb-3" controlId="formName">

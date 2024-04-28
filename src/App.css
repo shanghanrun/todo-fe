@@ -103,3 +103,7 @@ button {
   color: #ffffff;
   border: none;
 }
+
+.error{
+  color: red;
+}
