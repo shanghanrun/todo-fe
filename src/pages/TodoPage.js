@@ -4,8 +4,10 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import api from '../utils/api'
+import {Link, useNavigate} from 'react-router-dom'
 
-const TodoPage=()=>{
+const TodoPage=({setUser})=>{
+	const navigate = useNavigate()
 	const [todoList, setTodoList] = useState([])
 	const [taskValue, setTaskValue] = useState("")
 	
@@ -31,31 +33,42 @@ const TodoPage=()=>{
 		//서버로부터 전체 데이터 다시 받기(추가한 값 보기)
 		await getTasks()
 	}
+
+	const logout=()=>{
+		sessionStorage.clear()
+		setUser(null) // PrivateRoute 가 라우팅하는 키는 user이다.
+		navigate('/')
+	}
 	
 	useEffect(()=>{
 		getTasks()
 	},[])
 
+	
+
 	return (
 		<Container>
-		<Row className="add-item-row">
-			<Col xs={12} sm={10}>
-			<input
-				type="text"
-				placeholder="할일을 입력하세요"
-				className="input-box"
-				value={taskValue}
-				onChange={(e)=> setTaskValue(e.target.value)}
-			/>
-			</Col>
-			<Col xs={12} sm={2}>
-			<button 
-				onClick={addTask}
-			className="button-add">추가</button>
-			</Col>
-		</Row>
+			<div style={{display:'flex', justifyContent:"end", marginTop:"20px"}} onClick={logout}>
+				<Link to='/'>Logout</Link>
+			</div>
+			<Row className="add-item-row">
+				<Col xs={12} sm={10}>
+				<input
+					type="text"
+					placeholder="할일을 입력하세요"
+					className="input-box"
+					value={taskValue}
+					onChange={(e)=> setTaskValue(e.target.value)}
+				/>
+				</Col>
+				<Col xs={12} sm={2}>
+				<button 
+					onClick={addTask}
+				className="button-add">추가</button>
+				</Col>
+			</Row>
 
-		<TodoBoard todoList={todoList} getTasks={getTasks}/>
+			<TodoBoard todoList={todoList} getTasks={getTasks}/>
 		</Container>
 	);
 }
