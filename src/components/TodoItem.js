@@ -73,7 +73,8 @@ const TodoItem = ({item, getTasks}) => {
             : <div className="todo-content">{item.task}</div>
           }            
 
-          <div>
+          <div style={{display:'flex', alignItems:"center"}}>
+            <div style={{fontSize:'20px'}}>{(item.author)? `by ${item.author?.username}` : ''}</div>
             <button 
               onClick={deleteItem}
             className="button-delete">삭제</button>
