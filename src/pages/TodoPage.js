@@ -5,11 +5,13 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import api from '../utils/api'
 import {Link, useNavigate} from 'react-router-dom'
+import userStore from '../store/userStore';
 
 const TodoPage=({setUser})=>{
 	const navigate = useNavigate()
 	const [todoList, setTodoList] = useState([])
 	const [taskValue, setTaskValue] = useState("")
+	const {userInfo} = userStore()
 	
 	const getTasks = async()=>{
 		const res = await api.get('/tasks')  //http://localhost:5000/api/tasks
@@ -42,14 +44,18 @@ const TodoPage=({setUser})=>{
 	
 	useEffect(()=>{
 		getTasks()
+		console.log('TodoPage userInfo :', userInfo)
 	},[])
 
 	
 
 	return (
 		<Container>
-			<div style={{display:'flex', justifyContent:"end", marginTop:"20px"}} onClick={logout}>
-				<Link to='/'>Logout</Link>
+			<div style={{display:'flex', justifyContent:'end', alignItems:'center', marginTop:"20px"}}>
+				<div style={{marginRight:'30px'}}>{userInfo?.username}</div>
+				<div onClick={logout}>
+					<Link to='/'>Logout</Link>
+				</div>
 			</div>
 			<Row className="add-item-row">
 				<Col xs={12} sm={10}>

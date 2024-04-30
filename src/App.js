@@ -7,10 +7,12 @@ import RegisterPage from "./pages/RegisterPage";
 import {useState, useEffect} from 'react'
 import api from "./utils/api";
 import PrivateRoute from "./routes/PrivateRoute";
+import userStore from "./store/userStore";
 
 
 function App() {
   const [user, setUser] = useState('')
+  const {setUserInfo} = userStore()
 
   const getUser = async()=>{  //토큰을 통해 유저정보를 가져온다.
     try{
@@ -20,6 +22,7 @@ function App() {
         const resp = await api.get('/user/me')
         console.log('user정보 :', resp.data.user)
         setUser(resp.data.user)
+        setUserInfo(resp.data.user)
         console.log('user정보를 set 함')
       }
 

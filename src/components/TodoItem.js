@@ -1,11 +1,15 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Col, Row } from "react-bootstrap";
 import api from '../utils/api'
+import ReplyList from "./ReplyList";
+import userStore from "../store/userStore";
 
 const TodoItem = ({item, getTasks}) => {
   const [isDone, setIsDone] = useState(false)
   const [editable, setEditable] = useState(false)
   const [editValue, setEditValue] = useState('')
+  const [replyList, setReplyList] = useState([])
+  const {userInfo} = userStore()
 
   const deleteItem= async (e)=>{
     e.stopPropagation()
@@ -56,6 +60,16 @@ const TodoItem = ({item, getTasks}) => {
       }
     }
   }
+
+  async function getReplyList(){
+    const resp = await api.get(`/reply/${item._id}` )
+    setReplyList(resp.data.data)
+  }
+
+  useEffect(()=>{
+    getReplyList()
+    console.log('item.author? :', item.author)
+  },[])
   return (
     <Row>
       <Col xs={12}>
@@ -70,19 +84,29 @@ const TodoItem = ({item, getTasks}) => {
               onChange={handleInputChange}
               onKeyPress={handleKeyPress} autoFocus
             />
-            : <div className="todo-content">{item.task}</div>
+            : <div style={{fontSize:'20px'}}className="todo-content">{item.task}</div>
           }            
 
           <div style={{display:'flex', alignItems:"center"}}>
-            <div style={{fontSize:'20px'}}>{(item.author)? `by ${item.author?.username}` : ''}</div>
-            <button 
-              onClick={deleteItem}
-            className="button-delete">삭제</button>
-            <button
-              onClick={handleDone} 
-            className="button-done">{isDone? '안끝남' :'끝남'}</button>
+            <div style={{fontSize:'20px', marginRight:'10px'}}>{(item.author)? `by ${item.author?.username}` : ''}</div>
+
+            
+              { (item.author?._id === userInfo._id) ?
+                <div>
+                  <button 
+                    onClick={deleteItem}
+                    className="button-delete">삭제</button>
+                  <button
+                    onClick={handleDone} 
+                    className="button-done">{isDone? '안끝남' :'끝남'}</button>
+                </div>
+                : null
+              }
           </div>
         </div>
+        
+        
+        <ReplyList item={item} replyList={replyList} getReplyList={getReplyList} />
       </Col>
     </Row>
   );

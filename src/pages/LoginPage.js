@@ -4,11 +4,13 @@ import Form from "react-bootstrap/Form";
 
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import api from "../utils/api";
+import userStore from "../store/userStore";
 
 const LoginPage = ({user, setUser}) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const {setUserInfo} = userStore()
   const navigate = useNavigate()
 
   const handleLogin =async(e)=>{
@@ -23,6 +25,7 @@ const LoginPage = ({user, setUser}) => {
       console.log('로그인 성공시 resp:', resp)
       if(resp.status ===200){
         setUser(resp.data.user)
+        setUserInfo(resp.data.user)
         sessionStorage.setItem("token", resp.data.token)
         api.defaults.headers['authorization'] = "Bearer "+resp.data.token
         setError('')
