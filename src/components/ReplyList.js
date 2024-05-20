@@ -1,28 +1,24 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Reply from "./Reply";
 import api from '../utils/api'
+import replyStore from '../store/replyStore'
 
-const ReplyList = ({item, replyList, getReplyList}) => {
+const ReplyList = ({item}) => {
 	const [replyValue, setReplyValue] =useState('')
+	const {replyList, createReply, getReplyList} = replyStore()
 	
 
 	async function addReply(){
-		try{
-			const resp = await api.post('/reply', {itemId: item._id, content:replyValue })
-
-		if(resp.status === 200){
-			console.log('성공')
-			console.log('db에 추가된 데이터:', resp.data.data)
-		} else{
-			throw new Error('task can not be added')
-		}
-		} catch(e){
-		console.log(e.message)
-		}
+		createReply({taskId:item?._id, content:replyValue})
+		console.log('taskId : ', item._id)
 		//서버로부터 전체 데이터 다시 받기(추가한 값 보기)
-		await getReplyList()
+		await getReplyList(item?._id)
 		setReplyValue('')
 	}
+	
+	useEffect(()=>{
+		getReplyList(item?._id)
+	},[])
 
   return (
     <div style={{color:'#0048ff', margin:'10px 10px', border:'1px solid pink', borderRadius:'10px'}}>
@@ -30,7 +26,7 @@ const ReplyList = ({item, replyList, getReplyList}) => {
 	  
 	  <div style={{margin:'10px'}}>
 			{ replyList? (replyList.map((reply)=>(
-				<Reply key={reply._id} reply={reply} getReplyList={getReplyList} />
+				<Reply key={reply._id} item={item} reply={reply} getReplyList={getReplyList} />
 			)))
 			: (<h2>There is no reply to show</h2>)
 			}

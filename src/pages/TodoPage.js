@@ -22,7 +22,7 @@ const TodoPage=({setUser})=>{
 		setTaskValue('')
 		try{
 		//서버로 값 보내기
-		const resp = await api.post('/tasks', {task: taskValue, isDone:false})
+		const resp = await api.post('/tasks', {task: taskValue})
 		if(resp.status === 200){
 			console.log('성공')
 			console.log('db에 추가된 데이터:', resp.data.data)

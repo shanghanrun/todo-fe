@@ -61,15 +61,15 @@ const TodoItem = ({item, getTasks}) => {
     }
   }
 
-  async function getReplyList(){
-    const resp = await api.get(`/reply/${item._id}` )
-    setReplyList(resp.data.data)
-  }
+  // async function getReplyList(){
+  //   const resp = await api.get(`/reply/${item._id}` )
+  //   setReplyList(resp.data.data)
+  // }
 
-  useEffect(()=>{
-    getReplyList()
-    console.log('item.author? :', item.author)
-  },[])
+  // useEffect(()=>{
+  //   getReplyList()
+  //   console.log('item.author? :', item.author)
+  // },[])
   return (
     <Row>
       <Col xs={12}>
@@ -88,10 +88,10 @@ const TodoItem = ({item, getTasks}) => {
           }            
 
           <div style={{display:'flex', alignItems:"center"}}>
-            <div style={{fontSize:'20px', marginRight:'10px'}}>{(item.author)? `by ${item.author?.username}` : ''}</div>
+            <div style={{fontSize:'20px', marginRight:'10px'}}>{(item.authorId)? `by ${item.authorId?.username}` : ''}</div>
 
             
-              { (item.author?._id === userInfo._id) ?
+              { (item.authorId?._id === userInfo._id) ?
                 <div>
                   <button 
                     onClick={deleteItem}
@@ -106,7 +106,8 @@ const TodoItem = ({item, getTasks}) => {
         </div>
         
         
-        <ReplyList item={item} replyList={replyList} getReplyList={getReplyList} />
+        {/* <ReplyList item={item} replyList={replyList} getReplyList={getReplyList} /> */}
+        <ReplyList item={item} />
       </Col>
     </Row>
   );

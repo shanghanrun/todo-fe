@@ -3,10 +3,11 @@ import { Col, Row } from "react-bootstrap";
 import api from '../utils/api'
 import userStore from "../store/userStore";
 
-const Reply = ({reply, getReplyList}) => {
+const Reply = ({item, reply, getReplyList}) => {
 	const [editValue, setEditValue] = useState(reply.content)
 	const [editable, setEditable] = useState(false)
 	const {userInfo} = userStore()
+	console.log('userInfo :',)
 
 	const deleteReply= async (e)=>{
 		e.stopPropagation()
@@ -15,7 +16,7 @@ const Reply = ({reply, getReplyList}) => {
 		if(resp.status === 200){
 			console.log(resp.data.message)
 		}
-		await getReplyList()
+		await getReplyList(item?._id)
 
 		}catch(e){
 		console.log(e.message)
@@ -36,7 +37,7 @@ const Reply = ({reply, getReplyList}) => {
 				if(resp.status === 200){
 					console.log('업데이트된 댓글 : ', resp.data.data)
 				}
-				await getReplyList()
+				await getReplyList(item?._id)
 				setEditable(false)
 				setEditValue(resp.data.data.content)
 			}catch(e){
@@ -68,11 +69,11 @@ const Reply = ({reply, getReplyList}) => {
 							style={{width: '500px', marginLeft:'15px'}}
 						/>
 						:
-						<div>{(reply.author)? `by ${reply.author?.username}` : ''}</div>
+						<div>{ (item?.authorId.username === userInfo.username )? `by ${item.author.username}` : `by ${item?.authorId.username}`}</div>
 					}	
 				</div>
 
-				{ (reply.author._id === userInfo._id )?
+				{ (item.authorId._id === userInfo._id )?
 					<div>
 						<button style={{marginLeft:'20px'}}
 							onClick={editReply}
