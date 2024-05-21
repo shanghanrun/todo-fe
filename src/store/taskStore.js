@@ -23,7 +23,7 @@ const taskStore = create((set, get)=>({
 		}
 	},
 	updateTask:async(taskId, task)=>{
-		// task값이 없음녀 isDone 토글
+		// task값이 없으면 isDone 토글
 		try{
 			const resp = await api.put(`/tasks/${taskId}`, {task})
 			if (resp.status !==200) throw new Error(resp.error)
