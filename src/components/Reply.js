@@ -1,26 +1,20 @@
 import React, {useState, useEffect} from "react";
-import { Col, Row } from "react-bootstrap";
-import api from '../utils/api'
+import { Col, Row, Button } from "react-bootstrap";
 import userStore from "../store/userStore";
+import replyStore from '../store/replyStore'
 
-const Reply = ({item, reply, getReplyList}) => {
-	const [editValue, setEditValue] = useState(reply.content)
+const Reply = ({replyId}) => {
+	console.log('replyId', replyId)
+	const {deleteReply, updateReply} = replyStore()
+	const [editValue, setEditValue] = useState(replyId.content)
 	const [editable, setEditable] = useState(false)
 	const {userInfo} = userStore()
-	console.log('userInfo :',)
+	console.log('userInfo :',userInfo)
+	
 
-	const deleteReply= async (e)=>{
+	const removeReply= async (e)=>{
 		e.stopPropagation()
-		try{
-		const resp = await api.delete(`/reply/${reply._id}`)
-		if(resp.status === 200){
-			console.log(resp.data.message)
-		}
-		await getReplyList(item?._id)
-
-		}catch(e){
-		console.log(e.message)
-		}
+		await deleteReply(replyId._id)
 	}
 
 	const handleInputChange =(e)=>{
@@ -32,22 +26,14 @@ const Reply = ({item, reply, getReplyList}) => {
 		if(!editable){
 			setEditable(true)
 		} else {  //editable true라서 입력난이 나타나서 입력했을 경우
-			try{
-				const resp = await api.put(`/reply/${reply._id}`, {content: editValue})
-				if(resp.status === 200){
-					console.log('업데이트된 댓글 : ', resp.data.data)
-				}
-				await getReplyList(item?._id)
-				setEditable(false)
-				setEditValue(resp.data.data.content)
-			}catch(e){
-				console.log(e.message)
-			}
+			await updateReply(replyId._id, editValue)
+			
+			setEditable(false)
+			setEditValue(replyId.content)
 		}
 	}
 
 	useEffect(()=>{
-		console.log('reply.author :', reply.author)
 		console.log('userInfo._id :', userInfo._id)
 	},[])
 
@@ -56,7 +42,7 @@ const Reply = ({item, reply, getReplyList}) => {
 		<Col xs={12}>
 			<div style={{display:'flex'}}>
 			{editable ? ''
-			: <div style={{width:'800px'}} className="todo-content">{reply.content}</div>  
+			: <div style={{width:'800px'}} className="todo-content">{replyId?.content}</div>  
 			}
 
 			<div style={{display:'flex', alignItems:"center"}}>
@@ -69,18 +55,18 @@ const Reply = ({item, reply, getReplyList}) => {
 							style={{width: '500px', marginLeft:'15px'}}
 						/>
 						:
-						<div>{ (item?.authorId.username === userInfo.username )? `by ${item.author.username}` : `by ${item?.authorId.username}`}</div>
+						<div style={{width:'100px'}}>by {replyId.author} </div>
 					}	
 				</div>
 
-				{ (item.authorId._id === userInfo._id )?
-					<div>
-						<button style={{marginLeft:'20px'}}
+				{ (replyId?.authorId === userInfo._id )?
+					<div style={{width:'200px'}}>
+						<Button variant="success" style={{marginLeft:'20px'}}
 							onClick={editReply}
-							className="button-delete">{editable? "저장" : "수정"}</button>
-						<button style={{marginLeft:'20px'}}
-							onClick={deleteReply}
-							className="button-delete">삭제</button>
+							className="button-delete">{editable? "저장" : "수정"}</Button>
+						<Button variant="danger" style={{marginLeft:'20px'}}
+							onClick={removeReply}
+							className="button-delete">삭제</Button>
 					</div>
 					: ""
 				}

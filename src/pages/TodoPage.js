@@ -3,37 +3,22 @@ import TodoBoard from "../components/TodoBoard";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
-import api from '../utils/api'
 import {Link, useNavigate} from 'react-router-dom'
 import userStore from '../store/userStore';
+import taskStore from '../store/taskStore';
+import replyStore from '../store/replyStore';
 
 const TodoPage=({setUser})=>{
 	const navigate = useNavigate()
-	const [todoList, setTodoList] = useState([])
 	const [taskValue, setTaskValue] = useState("")
 	const {userInfo} = userStore()
+	const {createTask, taskList, getTasks, taskUpdated} = taskStore()
+	const {replyUpdated} = replyStore()
 	
-	const getTasks = async()=>{
-		const res = await api.get('/tasks')  //http://localhost:5000/api/tasks
-		console.log('get data :', res)
-		setTodoList(res.data.data)
-	}
+	
 	const addTask = async()=>{
 		setTaskValue('')
-		try{
-		//서버로 값 보내기
-		const resp = await api.post('/tasks', {task: taskValue})
-		if(resp.status === 200){
-			console.log('성공')
-			console.log('db에 추가된 데이터:', resp.data.data)
-		} else{
-			throw new Error('task can not be added')
-		}
-		} catch(e){
-		console.log(e.message)
-		}
-		//서버로부터 전체 데이터 다시 받기(추가한 값 보기)
-		await getTasks()
+		await createTask(taskValue)
 	}
 
 	const logout=()=>{
@@ -44,8 +29,7 @@ const TodoPage=({setUser})=>{
 	
 	useEffect(()=>{
 		getTasks()
-		console.log('TodoPage userInfo :', userInfo)
-	},[])
+	},[taskUpdated, replyUpdated])
 
 	
 
@@ -74,7 +58,7 @@ const TodoPage=({setUser})=>{
 				</Col>
 			</Row>
 
-			<TodoBoard todoList={todoList} getTasks={getTasks}/>
+			<TodoBoard todoList={taskList} />
 		</Container>
 	);
 }
