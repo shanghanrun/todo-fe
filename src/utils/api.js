@@ -2,7 +2,7 @@ import axios from "axios";
 
 //로컬에서 사용할 때의 요청주소
 const api = axios.create({
-  baseURL: `${process.env.REACT_APP_BACKEND_URL}/api`,   //http://localhost:5001/api
+  baseURL: `${process.env.REACT_APP_BACKEND_PROXY}/api`,   //http://localhost:5001/api
   headers: {
     "Content-Type": "application/json",
     'authorization': "Bearer "+ sessionStorage.getItem('token')
