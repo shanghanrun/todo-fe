@@ -14,8 +14,6 @@ const TodoPage=({setUser})=>{
 	const {userInfo} = userStore()
 	const {createTask, taskList, getTasks, taskUpdated} = taskStore()
 	const {replyUpdated} = replyStore()
-	
-	
 	const addTask = async()=>{
 		setTaskValue('')
 		await createTask(taskValue)
