@@ -32,13 +32,13 @@ const TodoItem = ({task}) => {
     setEditValue(e.target.value)
   }
   
-  const handleKeyPress = async(e)=>{
-    // if(e.key === 'Escape') { //ESC 인식안됨
-    //   console.log('esc 눌렸음')
-    //   setEditable(false);
-    //   setEditValue(task.content); 
-    //   return;
-    // }
+  const handleKeyDown = async(e)=>{
+    if(e.key === 'Escape') { 
+      console.log('esc 눌렸음')
+      setEditable(false);
+      setEditValue(task.content); 
+      return;
+    }
     if(e.key === 'Enter'){
       e.preventDefault()
       await updateTask(task._id,editValue)
@@ -61,7 +61,7 @@ const TodoItem = ({task}) => {
             <input 
               type='text' value={editValue}
               onChange={handleInputChange}
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyDown}
               placeholder={task.task}
               autoFocus
             />
