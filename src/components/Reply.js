@@ -20,6 +20,20 @@ const Reply = ({replyId}) => {
 	const handleInputChange =(e)=>{
 		setEditValue(e.target.value)
 	}
+	const handleKeyDown=async(e)=>{
+		if(e.key === 'Escape') { 
+			setEditable(false);
+			setEditValue(replyId.content); 
+			return;
+		}
+		if(e.key === 'Enter'){
+			e.preventDefault()
+			await updateReply(replyId._id,editValue)
+			
+			setEditable(false)
+			setEditValue(replyId.content)
+		}
+	}
 
   	const editReply = async (e)=>{
 		e.stopPropagation()
@@ -51,6 +65,7 @@ const Reply = ({replyId}) => {
 						<input
 							type='text' value={editValue}
 							onChange={handleInputChange}
+							onKeyDown={handleKeyDown}
 							autoFocus
 							style={{width: '500px', marginLeft:'15px'}}
 						/>

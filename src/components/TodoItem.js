@@ -34,7 +34,6 @@ const TodoItem = ({task}) => {
   
   const handleKeyDown = async(e)=>{
     if(e.key === 'Escape') { 
-      console.log('esc 눌렸음')
       setEditable(false);
       setEditValue(task.content); 
       return;
